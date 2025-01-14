@@ -17,9 +17,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
 
   void register() {
-    final name = nameController.text;
-    final email = nameController.text;
-    final password = nameController.text;
+    final name = nameController.text.trim();
+    final email = nameController.text.trim();
+    final password = nameController.text.trim();
     final authCubit = context.read<AuthCubit>();
 
     if (name.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
@@ -62,32 +62,37 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Column mobile() {
-    return Column(
-        children: [
-          const Text("Login Page"),
-          const SizedBox(height: 20,),
-          textField(false, nameController),
-          const SizedBox(height: 10,),
-          textField(false, emailController),
-          const SizedBox(height: 10,),
-          textField(true, passwordController),
-          const SizedBox(height: 10,),
-          ElevatedButton(
-              onPressed: register,
-              child: const Text("Login")
-          ),
-          Row(
-            children: [
-              const Text("Already a member?"),
-              GestureDetector(
-                onTap: widget.onTap,
-                child: const Text("Login Here!",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+  Container mobile() {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: Column(
+          children: [
+            const Text("Login Page"),
+            const SizedBox(height: 20,),
+            textField(false, nameController,'userName'),
+            const SizedBox(height: 10,),
+            textField(false, emailController,'email'),
+            const SizedBox(height: 10,),
+            textField(true, passwordController,'password'),
+            const SizedBox(height: 10,),
+            ElevatedButton(
+                onPressed: register,
+                child: const Text("Register")
+            ),
+            const SizedBox(height: 15,),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text("Already a member?"),
+                GestureDetector(
+                  onTap: widget.onTap,
+                  child: const Text("Login Here!",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ]);
+              ],
+            ),
+          ]),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:e_commerce_app/features/auth/presentation/widgets/text_field.dart';
+import 'package:e_commerce_app/features/constants/text_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,8 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController=TextEditingController();
 
   void login(){
-    final String email=emailController.text;
-    final String password=passwordController.text;
+    final String email=emailController.text.trim();
+    final String password=passwordController.text.trim();
 
     final authCubit=context.read<AuthCubit>();
     if(email.isNotEmpty && password.isNotEmpty){
@@ -64,29 +65,35 @@ class _LoginPageState extends State<LoginPage> {
     );
     }
 
-    Column mobile(){
-    return Column(
-      children: [
-        const Text("Login Page"),
-        const SizedBox(height: 20,),
-        textField(false, emailController),
-        const SizedBox(height: 10,),
-        textField(true, passwordController),
-        const SizedBox(height: 10,),
-        ElevatedButton(
-            onPressed: login,
-            child:const  Text("Login")
-        ),
-        Row(
-          children: [
-            const Text("Not register?"),
-            GestureDetector(
-                onTap: widget.onTap,
-                child: const Text("Register Here!")
-            ),
-          ],
-        )
-      ],
+    Container mobile(){
+    return Container(
+      margin:const  EdgeInsets.all(10),
+      child: Column(
+        children: [
+           Text("Login Page",style: BoldTextStyle.poppins,),
+          const SizedBox(height: 20,),
+          const Text("Email"),
+          textField(false, emailController,'email'),
+          const SizedBox(height: 10,),
+          const Text("Password"),
+          textField(true, passwordController,'password'),
+          const SizedBox(height: 10,),
+          ElevatedButton(
+              onPressed: login,
+              child:const  Text("Login")
+          ),
+          Row(
+            children: [
+              const Text("Not register?"),
+              GestureDetector(
+                  onTap: widget.onTap,
+                  child: const Text("Register Here!",
+                    style: TextStyle(fontWeight: FontWeight.bold),)
+              ),
+            ],
+          )
+        ],
+      ),
     );
     }
   }
