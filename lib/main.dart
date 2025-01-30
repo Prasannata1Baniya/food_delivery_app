@@ -21,9 +21,11 @@ void main() async{
   );
   final userProfileRepo=UserProfileImpl(FirebaseFirestore.instance);
   final storageRepo=FirebaseStorageRepo();
+  final authRepository=AuthRepoImpl();
 
     runApp(
       MultiBlocProvider(providers: [
+        BlocProvider(create: (_)=>AuthCubit(authRepository: authRepository)..checkUser(),),
         BlocProvider(create: (_)=> HomeCubit()),
         BlocProvider(create: (_)=> NavigationCubit()),
         BlocProvider(create: (_)=>ProfileCubit(userProfileRepo, storageRepo)),
@@ -38,31 +40,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: ( context)=> AuthCubit(authRepository: authRepo)..checkUser(),
-      child: MaterialApp(
-      home:BlocConsumer<AuthCubit,AuthState>(
-          builder: (context,state) {
-        if(state is AuthenticatedState){
-          return const BottomNavbar();
-        }
-        if(state is UnAuthenticatedState){
-          return const AuthPage();
-        }
-        else{
-          return const Scaffold(
-            body:CircularProgressIndicator()
-          );
-        }
-      },
-          listener: (context,state){
-            if(state is ErrorState){
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error)));
-            }
+    return MaterialApp(
+    home:BlocConsumer<AuthCubit,AuthState>(
+        builder: (context,state) {
+      if(state is AuthenticatedState){
+        return const BottomNavbar();
+      }
+      if(state is UnAuthenticatedState){
+        return const AuthPage();
+      }
+      else{
+        return const Scaffold(
+          body:CircularProgressIndicator()
+        );
+      }
+    },
+        listener: (context,state){
+          if(state is ErrorState){
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.error)));
           }
-      ),
-      ),
+        }
+    ),
     );
   }
 }

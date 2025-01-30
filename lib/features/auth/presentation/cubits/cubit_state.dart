@@ -1,5 +1,4 @@
 import 'package:e_commerce_app/features/auth/domain/entities/user_entity.dart';
-import 'package:flutter/cupertino.dart';
 
 abstract class AuthState{}
 

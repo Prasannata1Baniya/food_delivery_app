@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../constants/text_font.dart';
 import '../widgets/text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
       margin: const EdgeInsets.all(10),
       child: Column(
           children: [
-            const Text("Login Page"),
+             Text("Register Page",style: BoldTextStyle.poppins,),
             const SizedBox(height: 20,),
             textField(false, nameController,'userName'),
             const SizedBox(height: 10,),
