@@ -1,6 +1,8 @@
 import 'package:e_commerce_app/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:e_commerce_app/features/auth/presentation/cubits/cubit_state.dart';
 import 'package:e_commerce_app/features/auth/presentation/widgets/text_field.dart';
 import 'package:e_commerce_app/features/constants/text_font.dart';
+import 'package:e_commerce_app/features/home/presentation/pages/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,27 +46,37 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext context, BoxConstraints constraints) {
         bool isDesktop = constraints.maxWidth >=600;
         return Scaffold(
-          body: isDesktop?
-          Center(
+          body: BlocListener(listener: (context,state){
+            if(state is AuthenticatedState){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context)=>const BottomNavbar()));
+            }
+            else if(state is ErrorState){
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.error)));
+            }
+          },
+          child: isDesktop?
+            Center(
             child: Container(
-              height: 600,
-              width:500,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 0.5,
-                  ),
+            height: 600,
+            width:500,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.black,
+                width: 0.5,
               ),
-              child: mobile(),
             ),
-          )
-          : mobile(),
+            child: mobile(),
+          ),
+        )
+            : mobile(),
+          ),
         );
       }
     );
     }
-
     Container mobile(){
     return Container(
       margin:const  EdgeInsets.all(10),
@@ -79,7 +91,12 @@ class _LoginPageState extends State<LoginPage> {
           textField(true, passwordController,'password'),
           const SizedBox(height: 10,),
           ElevatedButton(
-              onPressed: login,
+              onPressed: (){
+                context.read<AuthCubit>().login(
+                    emailController.text.trim(),
+                    passwordController.text.trim()
+                );
+              },
               child:const  Text("Login")
           ),
           Row(

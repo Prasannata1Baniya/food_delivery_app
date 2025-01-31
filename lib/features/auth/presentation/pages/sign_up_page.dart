@@ -2,6 +2,8 @@ import 'package:e_commerce_app/features/auth/presentation/cubits/auth_cubit.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../constants/text_font.dart';
+import '../../../home/presentation/pages/bottom_nav.dart';
+import '../cubits/cubit_state.dart';
 import '../widgets/text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -46,18 +48,31 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (BuildContext context, BoxConstraints constraints) {
           bool isDesktop = constraints.maxWidth >= 600;
           return Scaffold(
-            body: isDesktop ?
-            Center(
-              child: Container(
-                height: 500,
-                width: 500,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: mobile(),
-              ),
-            )
-                : mobile(),
+            body:BlocListener<AuthCubit,AuthState>(
+                listener: (context,state)
+          {
+            if (state is AuthenticatedState) {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const BottomNavbar()));
+            }
+            else if (state is ErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.error)));
+            }
+           },
+                child:isDesktop ?
+                Center(
+                  child: Container(
+                    height: 500,
+                    width: 500,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: mobile(),
+                  ),
+                )
+                    : mobile(),
+            ),
           );
         }
     );
@@ -77,7 +92,11 @@ class _RegisterPageState extends State<RegisterPage> {
             textField(true, passwordController,'password'),
             const SizedBox(height: 10,),
             ElevatedButton(
-                onPressed: register,
+                onPressed:()=> context.read<AuthCubit>().register(
+                    nameController.text.trim(),
+                    emailController.text.trim(),
+                    passwordController.text.trim()
+                ),
                 child: const Text("Register")
             ),
             const SizedBox(height: 15,),

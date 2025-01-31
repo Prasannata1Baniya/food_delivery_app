@@ -4,10 +4,68 @@ import 'package:e_commerce_app/features/auth/domain/repos/auth_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AuthRepoImpl implements AuthRepository{
-  final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
-  final  FirebaseFirestore firebaseFirestore=FirebaseFirestore.instance;
+class AuthRepoImpl implements AuthRepository {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
+
+
+
+  @override
+  Future<AppUser?> loginWithEmailAndPassword(String email,
+      String password) async {
+    try {
+      UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (userCredential.user != null) {
+        return AppUser(
+          uid: userCredential.user!.uid,
+          name: userCredential.user!.displayName ?? '',
+          email: userCredential.user!.email ?? '',
+        );
+      }
+    } catch (e) {
+      debugPrint("Error logging in: $e");
+      throw Exception("Invalid email or password");
+    }
+    return null;
+  }
+
+  @override
+  Future<AppUser?> register(String name, String email, String password) async {
+    try {
+      UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (userCredential.user != null) {
+        AppUser user = AppUser(
+          uid: userCredential.user!.uid,
+          name: name,
+          email: email,
+        );
+
+        // Optionally, save user data to Firestore
+        await firebaseFirestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'name': user.name,
+          'email': user.email,
+        });
+
+        return user;
+      }
+    } catch (e) {
+      debugPrint("Error creating user: $e");
+      throw Exception("Failed to create user");
+    }
+    return null;
+  }
 
   @override
   Future<AppUser?> getCurrentUser() async {
@@ -26,60 +84,15 @@ class AuthRepoImpl implements AuthRepository{
       throw Exception("Failed to fetch current user");
     }
     return null;
-    /*
-    final firebaseUser=_firebaseAuth.currentUser;
-    if(firebaseUser==null){
-      return null;
-    }
-    return AppUser(uid: firebaseUser.uid,
-        email: firebaseUser.email!,
-        name: '',
-    );
-    */
   }
 
   @override
-  Future<void> logOut() async{
-    await _firebaseAuth.signOut();
-  }
-
-  @override
-  Future<AppUser?> loginWithEmailAndPassword(String email, String password) async {
-
-    try{
-      UserCredential userCredential=await _firebaseAuth.signInWithEmailAndPassword
-        (email: email, password: password);
-      AppUser user=AppUser(
-          uid: userCredential.user!.uid, email: email, name: ''
-      );
-      return user;
-    }
-    catch(e){
-      throw Exception("$e");
-    }
-  }
-
-  @override
-  Future<AppUser?> register(String name, String email, String password) async{
+  Future<void> logOut() async {
     try {
-      UserCredential userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword
-        (email: email, password: password);
-
-      if (userCredential.user != null) {
-        AppUser user = AppUser(
-          uid: userCredential.user!.uid, email: email, name: name,
-        );
-        await firebaseFirestore
-            .collection("users")
-            .doc(user.uid)
-            .set(user.toJson());
-        return user;
-      }
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      debugPrint("Error logging out: $e");
+      throw Exception("Failed to log out");
     }
-    catch(e){
-      throw Exception("$e");
-    }
-    return null;
   }
 }
