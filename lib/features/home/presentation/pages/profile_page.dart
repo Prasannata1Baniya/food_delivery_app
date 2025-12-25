@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/features/constants/text_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../profile/presentation/profile-cubit/profile_cubit.dart';
@@ -9,7 +10,11 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Profile')),
+      appBar: AppBar(
+          title: Text('User Profile',style: AppBarTitleText.poppins,),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+      ),
       body:BlocBuilder<ProfileCubit,ProfileState>(
           builder: (context,state){
             if(state.isLoading){

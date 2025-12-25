@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/features/constants/text_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../wallet/data/repo/wallet_repo_impl.dart';
@@ -19,7 +20,11 @@ class WalletPage extends StatelessWidget {
         getWalletBalanceUseCase: GetWalletBalanceUseCase(WalletRepoImpl(FirebaseFirestore.instance)),
       )..fetchBalance(userId),
       child: Scaffold(
-        appBar: AppBar(title: const Text("Wallet")),
+        appBar: AppBar(
+          title:Text("Wallet",style: AppBarTitleText.poppins,),
+          centerTitle: true,
+          backgroundColor: Colors.black,
+        ),
         body: BlocConsumer<WalletCubit, WalletState>(
           listener: (context, state) {
             if (state is WalletErrorState) {
