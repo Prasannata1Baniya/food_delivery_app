@@ -5,7 +5,7 @@ class HomeState extends Equatable{
   final bool isBurger;
   final bool isChicken;
 
-  const HomeState({this.isPizza=false, this.isBurger=false,this.isChicken=false});
+  const HomeState({this.isPizza=true, this.isBurger=false,this.isChicken=false});
 
   HomeState copyWith({
     bool? isPizza,
@@ -15,7 +15,7 @@ class HomeState extends Equatable{
     return HomeState(
       isPizza: isPizza?? this.isPizza,
       isBurger: isBurger??this.isBurger,
-      isChicken: isBurger??this.isChicken,
+      isChicken: isChicken??this.isChicken,
     );
 }
 

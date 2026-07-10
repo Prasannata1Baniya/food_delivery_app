@@ -14,54 +14,67 @@ import 'features/home/presentation/cubit/navigation-cubit/navigation_cubit.dart'
 import 'features/profile/data/repo/user_profile_iml.dart';
 import 'firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final userProfileRepo=UserProfileImpl(FirebaseFirestore.instance);
-  final storageRepo=FirebaseStorageRepo();
-  final authRepository=AuthRepoImpl();
 
-    runApp(
-      MultiBlocProvider(providers: [
-        BlocProvider(create: (_)=>AuthCubit(authRepository: authRepository)..checkUser(),),
-        BlocProvider(create: (_)=> HomeCubit()),
-        BlocProvider(create: (_)=> NavigationCubit()),
-        BlocProvider(create: (_)=>ProfileCubit(userProfileRepo, storageRepo)),
-      ], child: MyApp()),
-      );
+  final userProfileRepo = UserProfileImpl(FirebaseFirestore.instance);
+  final storageRepo = FirebaseStorageRepo();
+  final authRepository = AuthRepoImpl();
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => AuthCubit(authRepository: authRepository)..checkUser(),
+        ),
+        BlocProvider(
+          create: (_) => HomeCubit(),
+        ),
+        BlocProvider(
+          create: (_) => NavigationCubit(),
+        ),
+        BlocProvider(
+          create: (_) => ProfileCubit(userProfileRepo, storageRepo),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final authRepo=AuthRepoImpl();
-   MyApp({super.key,});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-    home:BlocConsumer<AuthCubit,AuthState>(
-        builder: (context,state) {
-      if(state is AuthenticatedState){
-        return const BottomNavbar();
-      }
-      if(state is UnAuthenticatedState){
-        return const AuthPage();
-      }
-      else{
-        return const Scaffold(
-          body:CircularProgressIndicator()
-        );
-      }
-    },
-        listener: (context,state){
-          if(state is ErrorState){
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)));
+      debugShowCheckedModeBanner: false,
+      home: BlocConsumer<AuthCubit, AuthState>(
+        builder: (context, state) {
+          if (state is AuthenticatedState) {
+            return const BottomNavbar();
           }
-        }
-    ),
+          if (state is UnAuthenticatedState) {
+            return const AuthPage();
+          } else {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+        },
+        listener: (context, state) {
+          if (state is ErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          }
+        },
+      ),
     );
   }
 }
-
