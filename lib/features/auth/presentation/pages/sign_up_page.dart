@@ -120,7 +120,6 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 const SizedBox(height: 40),
 
-                // Brand Aesthetic Icon & Heading Block
                 Center(
                   child: Container(
                     padding: const EdgeInsets.all(16),
@@ -208,7 +207,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: register, // Corrected to use clean controller extraction logic
+                    onPressed: register,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: accentColor,
                       foregroundColor: Colors.white,
