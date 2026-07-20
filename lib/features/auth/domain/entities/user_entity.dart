@@ -20,5 +20,4 @@ class AppUser{
         name:json['name'],
     );
   }
-
 }
