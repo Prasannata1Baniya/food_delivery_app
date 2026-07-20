@@ -27,7 +27,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.baniyaprasannata.e_commerce_app"
-    compileSdk 35
+    compileSdk 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
